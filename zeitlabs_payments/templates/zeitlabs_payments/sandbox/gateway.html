@@ -1,0 +1,34 @@
+{% extends "main_django.html" %}
+{% load i18n %}
+
+{% block body %}
+<style>
+    .sandbox-gateway { max-width: 520px; margin: 3rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,.1); font-family: Arial, sans-serif; }
+    .sandbox-gateway h1 { font-size: 1.4rem; margin-bottom: .5rem; }
+    .sandbox-gateway .warn { color: #a94442; font-size: .9rem; margin-bottom: 1.5rem; }
+    .sandbox-gateway dl { display: grid; grid-template-columns: 1fr 2fr; gap: .4rem 1rem; margin-bottom: 1.5rem; }
+    .sandbox-gateway dt { font-weight: bold; }
+    .sandbox-gateway .actions { display: flex; gap: 1rem; }
+    .sandbox-gateway button { padding: .7rem 1.4rem; border: 0; border-radius: 4px; font-size: 1rem; cursor: pointer; }
+    .sandbox-gateway .pay { background: #2e7d32; color: #fff; }
+    .sandbox-gateway .decline { background: #c62828; color: #fff; }
+</style>
+<div class="sandbox-gateway">
+    <h1>{% trans "Sandbox payment gateway" %}</h1>
+    <p class="warn">{% trans "This is a fake gateway for testing. No real payment is made." %}</p>
+    <dl>
+        <dt>{% trans "Reference" %}</dt><dd>{{ transaction_parameters.order_reference }}</dd>
+        <dt>{% trans "Description" %}</dt><dd>{{ transaction_parameters.order_description }}</dd>
+        <dt>{% trans "Amount" %}</dt><dd>{{ transaction_parameters.amount_display }} {{ transaction_parameters.currency }}</dd>
+        <dt>{% trans "Customer" %}</dt><dd>{{ transaction_parameters.user_email }}</dd>
+    </dl>
+    <form method="post" action="{{ transaction_parameters.return_url }}">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ transaction_parameters.csrfmiddlewaretoken }}">
+        <input type="hidden" name="merchant_reference" value="{{ transaction_parameters.order_reference }}">
+        <div class="actions">
+            <button class="pay" type="submit" name="outcome" value="success">{% trans "Pay" %}</button>
+            <button class="decline" type="submit" name="outcome" value="decline">{% trans "Decline" %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

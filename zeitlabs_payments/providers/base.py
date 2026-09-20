@@ -45,6 +45,13 @@ class BaseProcessor:
     TRANSACTION_STATUS_SUCCESS = 'success'
 
     @classmethod
+    def is_enabled(cls) -> bool:
+        """
+        Whether this processor should be registered. Processors can override it to check settings.
+        """
+        return True
+
+    @classmethod
     def get_payment_method_metadata(cls, cart: Cart) -> dict:
         """
         Return metadata for frontend display for this payment processor.

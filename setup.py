@@ -161,5 +161,8 @@ setup(
         'lms.djangoapp': [
             'zeitlabs_payments = zeitlabs_payments.apps:ZeitlabsPaymentsConfig',
         ],
+        'zeitlabs_payments.v1': [
+            'sandbox = zeitlabs_payments.providers.sandbox.processor:SandboxProcessor',
+        ],
     },
 )

@@ -52,3 +52,19 @@ def test_get_processor_raises_value_error_for_unknown_slug():
 def test_processor_is_registered_once():
     assert 'dummy' in PROCESSORS
     assert PROCESSORS['dummy'] is DummyProcessor
+
+
+@patch('zeitlabs_payments.providers.registry.PROCESSORS', new={})
+def test_load_entrypoint_processors_skips_disabled():
+    """Processors whose is_enabled() returns False are not registered."""
+    class DisabledProcessor(DummyProcessor):  # pylint: disable=missing-class-docstring
+        SLUG = 'disabled'
+
+        @classmethod
+        def is_enabled(cls):
+            return False
+
+    ep = make_entry_point('disabled', DisabledProcessor)
+    with patch.object(pkg_resources, 'iter_entry_points', lambda group: [ep]):
+        load_entrypoint_processors()
+    assert 'disabled' not in PROCESSORS

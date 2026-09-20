@@ -17,6 +17,8 @@ def load_entrypoint_processors() -> None:
         slug = getattr(cls, 'SLUG', None)
         if not slug:
             raise ValueError(f"Processor {cls.__name__} from entry point '{ep.name}' must define a SLUG")
+        if not cls.is_enabled():
+            continue
         PROCESSORS[slug] = cls
 
 
